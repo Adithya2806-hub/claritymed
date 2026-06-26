@@ -1,0 +1,79 @@
+CREATE DATABASE IF NOT EXISTS claritymed CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE claritymed;
+
+CREATE TABLE IF NOT EXISTS users (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  name VARCHAR(255) NOT NULL,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  password VARCHAR(255) NOT NULL,
+  age INT UNSIGNED DEFAULT NULL,
+  weight DECIMAL(5,2) DEFAULT NULL COMMENT 'in kg',
+  height DECIMAL(5,2) DEFAULT NULL COMMENT 'in cm',
+  gender ENUM('male','female','other') DEFAULT NULL,
+  food_preference VARCHAR(100) DEFAULT NULL,
+  goal VARCHAR(100) DEFAULT NULL,
+  allergies TEXT DEFAULT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  INDEX idx_email (email)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS reports (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  user_id INT UNSIGNED NOT NULL,
+  file_name VARCHAR(500) NOT NULL,
+  file_path VARCHAR(500) NOT NULL,
+  file_type VARCHAR(100) NOT NULL,
+  report_type VARCHAR(255) DEFAULT NULL,
+  raw_text LONGTEXT DEFAULT NULL,
+  analysis JSON DEFAULT NULL,
+  health_score INT UNSIGNED DEFAULT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  INDEX idx_user_id (user_id),
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS medicines (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  user_id INT UNSIGNED NOT NULL,
+  name VARCHAR(255) NOT NULL,
+  purpose VARCHAR(500) DEFAULT NULL,
+  dosage VARCHAR(255) DEFAULT NULL,
+  times JSON DEFAULT NULL COMMENT 'Array of alarm times',
+  is_active TINYINT(1) NOT NULL DEFAULT 1,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  INDEX idx_user_id (user_id),
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS reminders (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  user_id INT UNSIGNED NOT NULL,
+  type ENUM('test','doctor','revisit','general') NOT NULL DEFAULT 'general',
+  title VARCHAR(255) NOT NULL,
+  description TEXT DEFAULT NULL,
+  reminder_date DATETIME NOT NULL,
+  frequency ENUM('once','weekly','monthly','3months','6months','yearly') NOT NULL DEFAULT 'once',
+  is_active TINYINT(1) NOT NULL DEFAULT 1,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  INDEX idx_user_id (user_id),
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS family_members (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  user_id INT UNSIGNED NOT NULL,
+  name VARCHAR(255) NOT NULL,
+  relation ENUM('parent','spouse','child','sibling','other') NOT NULL DEFAULT 'other',
+  age INT UNSIGNED DEFAULT NULL,
+  gender ENUM('male','female','other') DEFAULT NULL,
+  blood_group VARCHAR(5) DEFAULT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  INDEX idx_user_id (user_id),
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
