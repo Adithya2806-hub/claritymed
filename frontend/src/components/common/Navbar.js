@@ -18,7 +18,7 @@ const navItems = [
 
 export default function Navbar() {
   const { theme, toggleTheme } = useTheme();
-  const { user, logout } = useAuth();
+  const { logout } = useAuth();
   const location = useLocation();
   const nav = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);

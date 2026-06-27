@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Users, Plus, Trash2, User, ChevronRight, Heart } from "lucide-react";
+import { Users, Plus, Trash2, ChevronRight, Heart } from "lucide-react";
 import api from "../utils/api";
 import toast from "react-hot-toast";
 

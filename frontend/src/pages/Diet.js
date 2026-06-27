@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Salad, RefreshCw, AlertCircle, Droplets, Dumbbell } from "lucide-react";
 import api from "../utils/api";
-import toast from "react-hot-toast";
 
 export default function Diet() {
   const [plan, setPlan] = useState(null);
